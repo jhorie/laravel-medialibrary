@@ -31,6 +31,8 @@ class Conversion
 
     protected int $pdfPageNumber = 1;
 
+    protected bool $useGif2Webp = false;
+
     public function __construct(
         protected string $name,
     ) {
@@ -87,6 +89,17 @@ class Conversion
     public function shouldKeepOriginalImageFormat(): bool
     {
         return $this->keepOriginalImageFormat;
+    }
+
+    public function setUseGif2WebpAsConverter(): void
+    {
+        $this->useGif2Webp = true;
+        $this->removeManipulation('format');
+    }
+
+    public function shouldUseGif2WebpAsConverter(): bool
+    {
+        return $this->useGif2Webp;
     }
 
     public function getManipulations(): Manipulations
@@ -206,6 +219,10 @@ class Conversion
             if (in_array(strtolower($originalFileExtension), ['jpg', 'jpeg', 'pjpg', 'png', 'gif', 'webp', 'avif'])) {
                 return $originalFileExtension;
             }
+        }
+
+        if ($this->shouldUseGif2WebpAsConverter()) {
+            return "webp";
         }
 
         if ($manipulationArgument = Arr::get($this->manipulations->getManipulationArgument('format'), 0)) {
