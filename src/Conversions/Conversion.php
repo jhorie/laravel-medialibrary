@@ -28,7 +28,7 @@ class Conversion
 
     protected bool $generateResponsiveImages = false;
 
-    protected WidthCalculator|null $widthCalculator = null;
+    protected ?WidthCalculator $widthCalculator = null;
 
     protected ?string $loadingAttributeValue;
 
@@ -213,7 +213,7 @@ class Conversion
         return $this;
     }
 
-    public function getWidthCalculator(): WidthCalculator | null
+    public function getWidthCalculator(): ?WidthCalculator
     {
         return $this->widthCalculator;
     }
