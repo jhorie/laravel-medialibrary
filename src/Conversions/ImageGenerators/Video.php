@@ -6,12 +6,17 @@ use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\FFMpeg;
 use FFMpeg\Media\Video as FFMpegVideo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Spatie\MediaLibrary\Conversions\Conversion;
 
 class Video extends ImageGenerator
 {
     public function convert(string $file, ?Conversion $conversion = null): ?string
     {
+        if ($conversion->getManipulations()->getManipulationArgument('format') == "webm") {
+            return $file;
+        }
+
         $ffmpeg = FFMpeg::create([
             'ffmpeg.binaries' => config('media-library.ffmpeg_path'),
             'ffprobe.binaries' => config('media-library.ffprobe_path'),
@@ -19,7 +24,7 @@ class Video extends ImageGenerator
 
         $video = $ffmpeg->open($file);
 
-        if (! ($video instanceof FFMpegVideo)) {
+        if (!($video instanceof FFMpegVideo)) {
             return null;
         }
 
@@ -28,7 +33,7 @@ class Video extends ImageGenerator
         $seconds = $conversion ? $conversion->getExtractVideoFrameAtSecond() : 0;
         $seconds = $duration <= $seconds ? 0 : $seconds;
 
-        $imageFile = pathinfo($file, PATHINFO_DIRNAME).'/'.pathinfo($file, PATHINFO_FILENAME).'.jpg';
+        $imageFile = pathinfo($file, PATHINFO_DIRNAME) . '/' . pathinfo($file, PATHINFO_FILENAME) . '.jpg';
 
         $frame = $video->frame(TimeCode::fromSeconds($seconds));
         $frame->save($imageFile);

@@ -12,10 +12,11 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class PerformManipulationsAction
 {
     public function execute(
-        Media $media,
+        Media      $media,
         Conversion $conversion,
-        string $imageFile,
-    ): string {
+        string     $imageFile,
+    ): string
+    {
 
         if ($conversion->getManipulations()->isEmpty()) {
             return $imageFile;
@@ -30,26 +31,37 @@ class PerformManipulationsAction
             $conversion->format($media->extension);
         }
 
-        $image = Image::useImageDriver(config('media-library.image_driver'))
-            ->loadFile($conversionTempFile)
-            ->format('jpg');
+        if (Str::startsWith(File::mimeType($conversionTempFile), "video/") && $conversion->getManipulations()->getManipulationArgument('format') == "webm") {
+            exec("ffmpeg -i " . $conversionTempFile . " -f webm -an " . $conversionTempFile . ".webm");
+            if (File::exists($conversionTempFile . '.webm')) {
+                unlink($conversionTempFile);
+                rename($conversionTempFile . '.webm', $conversionTempFile);
+            } else {
+                throw new \RuntimeException("Converted webm file does not exist, check if ffmpeg is intalled!");
+            }
+        } else {
+            $image = Image::useImageDriver(config('media-library.image_driver'))
+                ->loadFile($conversionTempFile)
+                ->format('jpg');
 
-        try {
-            $conversion->getManipulations()->apply($image);
+            try {
+                $conversion->getManipulations()->apply($image);
 
-            $image->save();
-        } catch (UnsupportedImageFormat) {
+                $image->save();
+            } catch (UnsupportedImageFormat) {
 
+            }
         }
 
         return $conversionTempFile;
     }
 
     protected function getConversionTempFileName(
-        Media $media,
+        Media      $media,
         Conversion $conversion,
-        string $imageFile,
-    ): string {
+        string     $imageFile,
+    ): string
+    {
         $directory = pathinfo($imageFile, PATHINFO_DIRNAME);
 
         $extension = $media->extension;
@@ -58,7 +70,7 @@ class PerformManipulationsAction
             $extension = 'jpg';
         }
 
-        $fileName = Str::random(32)."{$conversion->getName()}.{$extension}";
+        $fileName = Str::random(32) . "{$conversion->getName()}.{$extension}";
 
         return "{$directory}/{$fileName}";
     }
