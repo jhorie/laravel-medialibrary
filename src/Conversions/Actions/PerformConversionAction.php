@@ -9,6 +9,7 @@ use Spatie\MediaLibrary\Conversions\Events\ConversionWillStartEvent;
 use Spatie\MediaLibrary\Conversions\ImageGenerators\ImageGeneratorFactory;
 use Spatie\MediaLibrary\MediaCollections\Filesystem;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\MediaLibrary\Support\ImageFactory;
 use Spatie\MediaLibrary\ResponsiveImages\ResponsiveImageGenerator;
 
 class PerformConversionAction
@@ -28,9 +29,18 @@ class PerformConversionAction
             return;
         }
 
+        $isGif = pathinfo($copiedOriginalFile, PATHINFO_EXTENSION) === "gif";
+        $isAnimatedGif = $isGif && ImageFactory::isAnimatedGif($copiedOriginalFile);
+        $formatArg = $conversion->getManipulations()->getManipulationArgument('format');
+
         $shouldUseGif2WebpConverter = config('media-library.convert_gif_to_webp_using_gif2webp')
-            && pathinfo($copiedOriginalFile, PATHINFO_EXTENSION) === "gif"
-            && $conversion->getManipulations()->getManipulationArgument('format') == ["webp"];
+            && $isGif
+            && ($formatArg == ["webp"] || ($isAnimatedGif && $formatArg != ["gif"]));
+
+        // Override the format to webp for animated GIFs so gif2webp can handle them
+        if ($shouldUseGif2WebpConverter && $formatArg != ["webp"]) {
+            $conversion->getManipulations()->format('webp');
+        }
 
         if ($shouldUseGif2WebpConverter) {
             $conversion->setUseGif2WebpAsConverter();

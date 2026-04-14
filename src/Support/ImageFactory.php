@@ -20,7 +20,7 @@ class ImageFactory
             ->loadFile($path);
     }
 
-    protected static function isAnimatedGif(string $path): bool
+    public static function isAnimatedGif(string $path): bool
     {
         if (strtolower(pathinfo($path, PATHINFO_EXTENSION)) !== 'gif') {
             return false;
