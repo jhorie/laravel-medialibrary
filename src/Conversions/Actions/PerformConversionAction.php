@@ -73,7 +73,8 @@ class PerformConversionAction
 
         app(Filesystem::class)->copyToMediaLibrary($renamedFile, $media, 'conversions');
 
-        $media->markAsConversionGenerated($conversion->getName());
+        $generatedExtension = pathinfo($newFileName, PATHINFO_EXTENSION);
+        $media->markAsConversionGenerated($conversion->getName(), $generatedExtension);
 
         event(new ConversionHasBeenCompletedEvent($media, $conversion));
     }

@@ -318,17 +318,28 @@ class Media extends Model implements Attachable, Htmlable, Responsable
     /**
      * @return $this
      */
-    public function markAsConversionGenerated(string $conversionName): self
+    public function markAsConversionGenerated(string $conversionName, string $extension = ''): self
     {
         $generatedConversions = $this->generated_conversions;
 
-        Arr::set($generatedConversions, $conversionName, true);
+        Arr::set($generatedConversions, $conversionName, $extension ?: true);
 
         $this->generated_conversions = $generatedConversions;
 
         $this->saveOrTouch();
 
         return $this;
+    }
+
+    /**
+     * Get the file extension that was stored when the conversion was generated.
+     * Returns null for legacy records that stored `true` instead of the extension.
+     */
+    public function getGeneratedConversionExtension(string $conversionName): ?string
+    {
+        $value = Arr::get($this->generated_conversions ?? [], $conversionName);
+
+        return is_string($value) && $value !== '' ? $value : null;
     }
 
     /**
