@@ -9,6 +9,7 @@ use Spatie\MediaLibrary\Conversions\ConversionCollection;
 use Spatie\MediaLibrary\Conversions\FileManipulator;
 use Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAddedEvent;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\DiskCannotBeAccessed;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\Support\File;
 use Spatie\MediaLibrary\Support\FileNamer\FileNamer;
@@ -77,11 +78,17 @@ class Filesystem
 
         $storage = Storage::disk($file->getDisk());
 
+        $customHeaders = $media->getCustomHeaders();
+
+        if (in_array($type, ['conversions', 'responsiveImages'])) {
+            unset($customHeaders['ContentType']);
+        }
+
         $headers = $diskDriverName === 'local'
             ? []
             : $this->getRemoteHeadersForFile(
                 $file->getKey(),
-                $media->getCustomHeaders(),
+                $customHeaders,
                 $storage->mimeType($file->getKey())
             );
 
@@ -138,6 +145,10 @@ class Filesystem
 
         $file = fopen($pathToFile, 'r');
 
+        if ($file === false) {
+            throw FileDoesNotExist::create($pathToFile);
+        }
+
         $diskName = (in_array($type, ['conversions', 'responsiveImages']))
             ? $media->conversions_disk
             : $media->disk;
@@ -160,12 +171,18 @@ class Filesystem
             return;
         }
 
+        $customHeaders = $media->getCustomHeaders();
+
+        if (in_array($type, ['conversions', 'responsiveImages'])) {
+            unset($customHeaders['ContentType']);
+        }
+
         $success = $this->filesystem
             ->disk($diskName)
             ->put(
                 $destination,
                 $file,
-                $this->getRemoteHeadersForFile($pathToFile, $media->getCustomHeaders()),
+                $this->getRemoteHeadersForFile($pathToFile, $customHeaders),
             );
 
         if (is_resource($file)) {
@@ -201,7 +218,7 @@ class Filesystem
 
     public function getStream(Media $media)
     {
-        $sourceFile = $this->getMediaDirectory($media).'/'.$media->file_name;
+        $sourceFile = $this->getMediaDirectory($media).$media->file_name;
 
         return $this->filesystem->disk($media->disk)->readStream($sourceFile);
     }

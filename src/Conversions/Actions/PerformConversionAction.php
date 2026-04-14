@@ -44,6 +44,10 @@ class PerformConversionAction
             $manipulationResult = $copiedOriginalFile;
         }
 
+        if (! $manipulationResult) {
+            return;
+        }
+
         $newFileName = $conversion->getConversionFile($media);
 
         $renamedFile = $this->renameInLocalDirectory($manipulationResult, $newFileName);

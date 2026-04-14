@@ -34,16 +34,22 @@ trait IsSorted
      */
     public static function setNewOrder(array $ids, int $startOrder = 1): void
     {
+        if (empty($ids)) {
+            return;
+        }
+
+        $ids = array_values($ids);
+
+        $models = static::whereIn('id', $ids)->get()->keyBy('id');
+        $orderColumn = (new static)->determineOrderColumnName();
+
         foreach ($ids as $id) {
-            $model = static::find($id);
-            if (! $model) {
+            if (! isset($models[$id])) {
                 continue;
             }
 
-            $orderColumnName = $model->determineOrderColumnName();
-
-            $model->$orderColumnName = $startOrder++;
-
+            $model = $models[$id];
+            $model->$orderColumn = $startOrder++;
             $model->save();
         }
     }

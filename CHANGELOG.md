@@ -2,6 +2,208 @@
 
 All notable changes to `laravel-medialibrary` will be documented in this file
 
+## 11.20.0 - 2026-02-15
+
+### What's new
+
+- Add `getAvailableTemporaryUrl` method (#3919)
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.19.0...11.20.0
+
+## 11.19.0 - 2026-02-12
+
+### What's Changed
+
+* Add Laravel Boost v2 skill by @freekmurze in https://github.com/spatie/laravel-medialibrary/pull/3917
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.18.2...11.19.0
+
+## 11.18.2 - 2026-02-09
+
+### What's Changed
+
+* Fix setNewOrder breaking with non-sequential array keys by @freekmurze in https://github.com/spatie/laravel-medialibrary/pull/3916
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.18.1...11.18.2
+
+## 11.18.1 - 2026-02-09
+
+### What's Changed
+
+* Revert breaking interface change on `registerAllMediaConversions()` — the `?Media $media = null` parameter that was added to the `HasMedia` interface in v11.18.0 has been removed, as it broke userland code that overrides the method without the parameter. The PHPStan error is now handled via the baseline instead. Fixes #3915.
+
+## 11.18.0 - 2026-02-09
+
+### What's Changed
+
+* Add vips as a documented image driver option by @freekmurze in https://github.com/spatie/laravel-medialibrary/pull/3911
+* Fix: setNewOrder method upgrade by @GameBear64 in https://github.com/spatie/laravel-medialibrary/pull/3908
+* Update Laravel Filesystem documentation link to v12 by @mathiasdg in https://github.com/spatie/laravel-medialibrary/pull/3909
+* Add conversion to responsAdd conversion parameter to toResponse and toInlineResponse by @miccehedin in https://github.com/spatie/laravel-medialibrary/pull/3907
+* Fix #3889: Clean orphaned responsive images for base image by @freekmurze in https://github.com/spatie/laravel-medialibrary/pull/3913
+* Fix S3 conversions inheriting original media's ContentType by @freekmurze in https://github.com/spatie/laravel-medialibrary/pull/3914
+
+### New Contributors
+
+* @GameBear64 made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3908
+* @mathiasdg made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3909
+* @miccehedin made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3907
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.17.10...11.18.0
+
+## 11.17.10 - 2026-01-23
+
+### What's Changed
+
+* Add `getAvailablePathRelativeToRoot()` method by @adriaanzon in https://github.com/spatie/laravel-medialibrary/pull/3877
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.17.9...11.17.10
+
+## 11.17.9 - 2026-01-23
+
+### What's Changed
+
+* Fix getStream path concatenation for custom PathGenerator by @dmitrakovich in https://github.com/spatie/laravel-medialibrary/pull/3904
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.17.8...11.17.9
+
+## 11.17.8 - 2026-01-05
+
+### What's Changed
+
+* feat: faster clean command via hash lookup by @ImJustToNy in https://github.com/spatie/laravel-medialibrary/pull/3898
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.17.7...11.17.8
+
+## 11.17.7 - 2025-12-15
+
+### What's Changed
+
+* Fix PHPDoc property name to use snake_case by @michael-tscholl in https://github.com/spatie/laravel-medialibrary/pull/3895
+
+### New Contributors
+
+* @michael-tscholl made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3895
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.17.6...11.17.7
+
+## 11.17.6 - 2025-12-10
+
+### What's Changed
+
+* Bump actions/checkout from 5 to 6 by @dependabot[bot] in https://github.com/spatie/laravel-medialibrary/pull/3883
+* Allow ZipStream to be 'unfinished' by @chrispage1 in https://github.com/spatie/laravel-medialibrary/pull/3887
+* Set config directory for larastan by @erikn69 in https://github.com/spatie/laravel-medialibrary/pull/3894
+* Fix imagedestroy deprecation by @erikn69 in https://github.com/spatie/laravel-medialibrary/pull/3893
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.17.5...11.17.6
+
+## 11.17.5 - 2025-11-13
+
+### What's Changed
+
+* fix: duration should be parsed as float by @francoism90 in https://github.com/spatie/laravel-medialibrary/pull/3869
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.17.4...11.17.5
+
+## 11.17.4 - 2025-11-12
+
+### What's Changed
+
+* Add m4v format clean by @imhayatunnabi in https://github.com/spatie/laravel-medialibrary/pull/3873
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.17.3...11.17.4
+
+## 11.17.3 - 2025-11-04
+
+### What's Changed
+
+* Improve media library with safeguards by @imhayatunnabi in https://github.com/spatie/laravel-medialibrary/pull/3867
+
+### New Contributors
+
+* @imhayatunnabi made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3867
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.17.2...11.17.3
+
+## 11.17.2 - 2025-11-03
+
+### What's Changed
+
+* Added Symfony 8 support to all symfony/* packages. by @thecaliskan in https://github.com/spatie/laravel-medialibrary/pull/3864
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.17.1...11.17.2
+
+## 11.17.1 - 2025-11-03
+
+### What's Changed
+
+* Add timeout and threads configuration for FFMpeg by @francoism90 in https://github.com/spatie/laravel-medialibrary/pull/3862
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.17.0...11.17.1
+
+## 11.17.0 - 2025-10-22
+
+### What's Changed
+
+* docs: add installation instructions for image optimizers on Alpine Linux by @nastoychev in https://github.com/spatie/laravel-medialibrary/pull/3845
+* Feat: allow null expiration for model get temporary url method by @chinmaypurav in https://github.com/spatie/laravel-medialibrary/pull/3851
+* Update issue template by @AlexVanderbist in https://github.com/spatie/laravel-medialibrary/pull/3850
+* Optimize filename suffix generation in MediaStream by @iizno in https://github.com/spatie/laravel-medialibrary/pull/3855
+* Test PHP 8.5 by @erikn69 in https://github.com/spatie/laravel-medialibrary/pull/3857
+* Add Support for Defining Custom Path Generators in Models or Service Providers by @alissn in https://github.com/spatie/laravel-medialibrary/pull/3828
+* Bump stefanzweifel/git-auto-commit-action from 6 to 7 by @dependabot[bot] in https://github.com/spatie/laravel-medialibrary/pull/3860
+
+### New Contributors
+
+* @iizno made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3855
+* @alissn made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3828
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.14.0...11.17.0
+
+## 11.16.0 - 2025-10-21
+
+### What's Changed
+
+* Test PHP 8.5 by @erikn69 in https://github.com/spatie/laravel-medialibrary/pull/3857
+* Add Support for Defining Custom Path Generators in Models or Service Providers by @alissn in https://github.com/spatie/laravel-medialibrary/pull/3828
+* Bump stefanzweifel/git-auto-commit-action from 6 to 7 by @dependabot[bot] in https://github.com/spatie/laravel-medialibrary/pull/3860
+
+### New Contributors
+
+* @alissn made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3828
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.15.0...11.16.0
+
+## 11.15.0 - 2025-09-19
+
+### What's Changed
+
+* docs: add installation instructions for image optimizers on Alpine Linux by @nastoychev in https://github.com/spatie/laravel-medialibrary/pull/3845
+* Feat: allow null expiration for model get temporary url method by @chinmaypurav in https://github.com/spatie/laravel-medialibrary/pull/3851
+* Update issue template by @AlexVanderbist in https://github.com/spatie/laravel-medialibrary/pull/3850
+* Optimize filename suffix generation in MediaStream by @iizno in https://github.com/spatie/laravel-medialibrary/pull/3855
+
+### New Contributors
+
+* @iizno made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3855
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.14.0...11.15.0
+
+## 11.14.0 - 2025-08-19
+
+### What's Changed
+
+* Feat: set default expiration minutes when no value passes in args for temp url by @chinmaypurav in https://github.com/spatie/laravel-medialibrary/pull/3832
+* Bump actions/checkout from 4 to 5 by @dependabot[bot] in https://github.com/spatie/laravel-medialibrary/pull/3840
+* Bump stefanzweifel/git-auto-commit-action from 5 to 6 by @dependabot[bot] in https://github.com/spatie/laravel-medialibrary/pull/3825
+
+### New Contributors
+
+* @chinmaypurav made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3832
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/11.13.0...11.14.0
+
 ## 11.13.0 - 2025-05-22
 
 ### What's Changed

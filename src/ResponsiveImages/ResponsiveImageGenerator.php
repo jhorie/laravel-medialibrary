@@ -149,7 +149,7 @@ class ResponsiveImageGenerator
 
         $originalImageHeight = $originalImage->getHeight();
 
-        $svg = view('media-library::placeholderSvg', compact(
+        $svg = view('media-library::placeholderSvg', compact( // @phpstan-ignore argument.type
             'originalImageWidth',
             'originalImageHeight',
             'tinyImageBase64'

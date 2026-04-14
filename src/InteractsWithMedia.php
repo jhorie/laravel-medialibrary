@@ -30,6 +30,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @template TMedia of \Spatie\MediaLibrary\MediaCollections\Models\Media = \Spatie\MediaLibrary\MediaCollections\Models\Media
+ *
+ * @phpstan-ignore trait.unused
  */
 trait InteractsWithMedia
 {
@@ -56,7 +58,7 @@ trait InteractsWithMedia
                 }
             }
 
-            $model->media()->cursor()->each(fn (Media $media) => $media->delete());
+            $model->deleteAllMedia();
         });
     }
 
@@ -380,10 +382,12 @@ trait InteractsWithMedia
      * If no profile is given, return the source's url.
      */
     public function getFirstTemporaryUrl(
-        DateTimeInterface $expiration,
+        ?DateTimeInterface $expiration = null,
         string $collectionName = 'default',
         string $conversionName = ''
     ): string {
+        $expiration = $expiration ?: now()->addMinutes(config('media-library.temporary_url_default_lifetime'));
+
         return $this->getMediaItemTemporaryUrl($expiration, $collectionName, $conversionName, CollectionPosition::First);
     }
 
@@ -394,10 +398,12 @@ trait InteractsWithMedia
      * If no profile is given, return the source's url.
      */
     public function getLastTemporaryUrl(
-        DateTimeInterface $expiration,
+        ?DateTimeInterface $expiration = null,
         string $collectionName = 'default',
         string $conversionName = ''
     ): string {
+        $expiration = $expiration ?: now()->addMinutes(config('media-library.temporary_url_default_lifetime'));
+
         return $this->getMediaItemTemporaryUrl($expiration, $collectionName, $conversionName, CollectionPosition::Last);
     }
 
@@ -677,6 +683,16 @@ trait InteractsWithMedia
         if ($validation->fails()) {
             throw MimeTypeNotAllowed::create($file, $allowedMimeTypes);
         }
+    }
+
+    public function deleteAllMedia(): self
+    {
+        $this
+            ->media()
+            ->cursor()
+            ->each(fn (Media $media) => $media->delete());
+
+        return $this;
     }
 
     public function registerMediaConversions(?Media $media = null): void {}
