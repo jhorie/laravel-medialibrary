@@ -5,9 +5,9 @@ namespace Spatie\MediaLibrary\Conversions\Actions;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Spatie\Image\Exceptions\UnsupportedImageFormat;
-use Spatie\Image\Image;
 use Spatie\MediaLibrary\Conversions\Conversion;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\MediaLibrary\Support\ImageFactory;
 
 class PerformManipulationsAction
 {
@@ -34,17 +34,20 @@ class PerformManipulationsAction
             $conversion->format($media->extension);
         }
 
-        if (Str::startsWith(File::mimeType($conversionTempFile), "video/") && $conversion->getManipulations()->getManipulationArgument('format') == ["webm"]) {
-            exec("ffmpeg -i " . $conversionTempFile . " -f webm -an " . $conversionTempFile . ".webm");
-            if (File::exists($conversionTempFile . '.webm')) {
+        if (Str::startsWith(File::mimeType($conversionTempFile), "video/") && $conversion->getManipulations()->getManipulationArgument('format') == ["mp4"]) {
+            $input = escapeshellarg($conversionTempFile);
+            $output = escapeshellarg($conversionTempFile . '.mp4');
+
+            exec("ffmpeg -i {$input} -c:v libx264 -preset fast -crf 28 -vf \"scale='min(1080,iw)':-2\" -an -movflags +faststart {$output} 2>&1", $cmdOutput, $returnCode);
+
+            if ($returnCode === 0 && File::exists($conversionTempFile . '.mp4')) {
                 unlink($conversionTempFile);
-                rename($conversionTempFile . '.webm', $conversionTempFile);
+                rename($conversionTempFile . '.mp4', $conversionTempFile);
             } else {
-                throw new \RuntimeException("Converted webm file does not exist, check if ffmpeg is intalled!");
+                throw new \RuntimeException("FFmpeg conversion failed (code {$returnCode}): " . implode("\n", $cmdOutput));
             }
         } else {
-        $image = Image::useImageDriver(config('media-library.image_driver'))
-            ->loadFile($conversionTempFile)
+        $image = ImageFactory::load($conversionTempFile)
             ->format('jpg');
 
         try {

@@ -9,7 +9,25 @@ class ImageFactory
 {
     public static function load(string $path): ImageDriver
     {
-        return Image::useImageDriver(config('media-library.image_driver'))
+        $driver = config('media-library.image_driver');
+
+        // Fall back to imagick for animated GIFs (VIPS doesn't support multi-frame)
+        if ($driver === 'vips' && self::isAnimatedGif($path)) {
+            $driver = 'imagick';
+        }
+
+        return Image::useImageDriver($driver)
             ->loadFile($path);
+    }
+
+    protected static function isAnimatedGif(string $path): bool
+    {
+        if (strtolower(pathinfo($path, PATHINFO_EXTENSION)) !== 'gif') {
+            return false;
+        }
+
+        $content = file_get_contents($path);
+
+        return $content !== false && substr_count($content, "\x00\x21\xF9") > 1;
     }
 }
