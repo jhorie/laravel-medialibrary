@@ -14,7 +14,7 @@ class Video extends ImageGenerator
     public function convert(string $file, ?Conversion $conversion = null): ?string
     {
         // Create an FFMpeg instance
-        if ($conversion->getManipulations()->getManipulationArgument('format') == ["webm"]) {
+        if (in_array($conversion->getManipulations()->getManipulationArgument('format'), [["mp4"], ["webm"]])) {
             return $file;
         }
 
