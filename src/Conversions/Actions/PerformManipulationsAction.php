@@ -34,15 +34,21 @@ class PerformManipulationsAction
             $conversion->format($media->extension);
         }
 
-        if (Str::startsWith(File::mimeType($conversionTempFile), "video/") && $conversion->getManipulations()->getManipulationArgument('format') == ["mp4"]) {
+        $targetFormat = $conversion->getManipulations()->getManipulationArgument('format');
+        if (Str::startsWith(File::mimeType($conversionTempFile), "video/") && in_array($targetFormat, [["mp4"], ["webm"]])) {
+            $format = $targetFormat[0];
             $input = escapeshellarg($conversionTempFile);
-            $output = escapeshellarg($conversionTempFile . '.mp4');
+            $output = escapeshellarg($conversionTempFile . '.' . $format);
 
-            exec("ffmpeg -i {$input} -c:v libx264 -preset fast -crf 28 -vf \"scale='min(1080,iw)':-2\" -an -movflags +faststart {$output} 2>&1", $cmdOutput, $returnCode);
+            $codecArgs = $format === 'webm'
+                ? "-c:v libvpx-vp9 -b:v 0 -crf 32 -row-mt 1"
+                : "-c:v libx264 -preset fast -crf 28 -movflags +faststart";
 
-            if ($returnCode === 0 && File::exists($conversionTempFile . '.mp4')) {
+            exec("ffmpeg -i {$input} {$codecArgs} -vf \"scale='min(1080,iw)':-2\" -an {$output} 2>&1", $cmdOutput, $returnCode);
+
+            if ($returnCode === 0 && File::exists($conversionTempFile . '.' . $format)) {
                 unlink($conversionTempFile);
-                rename($conversionTempFile . '.mp4', $conversionTempFile);
+                rename($conversionTempFile . '.' . $format, $conversionTempFile);
             } else {
                 throw new \RuntimeException("FFmpeg conversion failed (code {$returnCode}): " . implode("\n", $cmdOutput));
             }
